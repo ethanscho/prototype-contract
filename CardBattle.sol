@@ -1,58 +1,58 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-uuidentifier: MIT
 pragma solidity ^0.8.7;
 
 contract CardBattle {
 
-  struct Unit {
-    uint id;
+  struct Card {
+    uint uuid;
   }
 
   address private owner;
 
-  Unit[] public units;
-  Unit[] private unitsOnSale;
+  Card[] public Cards;
+  Card[] private CardsOnSale;
 
-  mapping (uint => Unit) idToUnit;
-  mapping (uint => address) public unitToOwner;
-  mapping (address => uint) ownerUnitCount;
+  mapping (uint => Card) uuidToCard;
+  mapping (uint => address) public CardToOwner;
+  mapping (address => uint) ownerCardCount;
 
   constructor() {
     owner = msg.sender;
   }
 
-  function getUnits() external view returns(Unit[] memory) {
-    return units;
+  function getCards() external view returns(Card[] memory) {
+    return Cards;
   }
 
-  function getUnitsOnSale() external view returns(Unit[] memory) {
-    return unitsOnSale;
+  function getCardsOnSale() external view returns(Card[] memory) {
+    return CardsOnSale;
   }
 
-  function getUnitsByOwner(address _owner) external view returns(Unit[] memory) {
-    Unit[] memory result = new Unit[](ownerUnitCount[_owner]);
+  function getCardsByOwner(address _owner) external view returns(Card[] memory) {
+    Card[] memory result = new Card[](ownerCardCount[_owner]);
     uint counter = 0;
-    for (uint i = 0; i < units.length; i++) {
-      if (unitToOwner[units[i].id] == _owner) {
-        result[counter] = units[i];
+    for (uint i = 0; i < Cards.length; i++) {
+      if (CardToOwner[Cards[i].uuid] == _owner) {
+        result[counter] = Cards[i];
         counter++;
       }
     }
     return result;
   }
 
-  function createUnit(uint id) external {
-    Unit memory unit = Unit({id:id});
-    units.push(unit);
+  function createCard(uint uuid) external {
+    Card memory Card = Card({uuid:uuid});
+    Cards.push(Card);
 
-    unitToOwner[id] = msg.sender;
-    ownerUnitCount[msg.sender]++;
-    idToUnit[id] = unit;
+    CardToOwner[uuid] = msg.sender;
+    ownerCardCount[msg.sender]++;
+    uuidToCard[uuid] = Card;
   }
 
-  function sellUnit(uint id) external {
-    require(unitToOwner[id] == msg.sender);
-    Unit memory unit = idToUnit[id];
-    unitsOnSale.push(unit);
+  function sellCard(uint uuid) external {
+    require(CardToOwner[uuid] == msg.sender);
+    Card memory Card = uuidToCard[uuid];
+    CardsOnSale.push(Card);
   }
 
   function greet() view public returns (address) {
