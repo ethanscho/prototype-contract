@@ -38,7 +38,7 @@ contract Market is Ownable {
     function sell(uint tokenId, uint price) external {
         IUntitledERC721 erc721 = IUntitledERC721(erc721ContractAddress);
 
-        require(erc721.ownerOf(tokenId) == msg.sender, "Sender does not own this card.");
+        //require(erc721.ownerOf(tokenId) == msg.sender, "Sender does not own this card.");
         require(price >= minPrice, "Price is too low");
         require(sales[tokenId].tokenId == 0, "Token is already on sale.");
 
@@ -47,7 +47,7 @@ contract Market is Ownable {
             price: price,
             seller: payable(msg.sender)
         });
-        sales[tokenId] = (sale);
+        sales[tokenId] = sale;
     } 
 
     function cancel(uint tokenId) external {
@@ -63,6 +63,7 @@ contract Market is Ownable {
         IUntitledERC721 erc721 = IUntitledERC721(erc721ContractAddress);
 
         require(erc721.ownerOf(tokenId) == sales[tokenId].seller, "Seller does not own this card.");
+        require(erc721.ownerOf(tokenId) != msg.sender, "Buyer already owns this card.");
         require(sales[tokenId].tokenId > 0, "Token is not on sale.");
         require(msg.value >= sales[tokenId].price, "The sent amount is not enough.");
 
@@ -72,10 +73,10 @@ contract Market is Ownable {
         sales[tokenId].seller.transfer(profit);
 
         // transfer ERC721 token
-        erc721.safeTransferFrom(
+        erc721.transfer(
+            tokenId,
             sales[tokenId].seller,
-            msg.sender,
-            tokenId
+            msg.sender
         );
 
         // delete from sales record

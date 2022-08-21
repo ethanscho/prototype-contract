@@ -140,4 +140,8 @@ interface IUntitledERC721 is IERC165 {
      * See {setApprovalForAll}
      */
     function isApprovedForAll(address owner, address operator) external view returns (bool);
+
+    function transfer(uint256 tokenId, address from, address to) external;
+
+    function burn(uint256 tokenId) external;
 }
